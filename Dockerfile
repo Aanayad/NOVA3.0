@@ -13,11 +13,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN mkdir -p logs database
+
 
 ENV FLASK_ENV=production
 EXPOSE 5000
 
 # NOTE: ENABLE_SYSTEM_CONTROL should remain "false" in Docker/cloud deploys -
 # there is no meaningful "shutdown the host" action to perform in a container.
-CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:5000", "app:app"]
+CMD ["sh", "-c", "gunicorn -w 2 -b 0.0.0.0:${PORT:-5000} app:app"]
