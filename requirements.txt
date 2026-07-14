@@ -1,0 +1,22 @@
+# --- Core backend ---
+Flask==3.0.3
+Flask-Cors==4.0.1
+Flask-Limiter==3.8.0
+python-dotenv==1.0.1
+PyJWT==2.9.0
+
+# --- AI brain (Groq - free, fast, OpenAI-SDK compatible) ---
+openai==1.54.0
+
+# --- YouTube auto-play lookup (no API key needed) ---
+requests==2.32.3
+
+# --- System / desktop automation (LOCAL USE ONLY - see README) ---
+pyautogui==0.9.54
+psutil==6.0.0
+screen-brightness-control==0.24.1
+pycaw==20240210; platform_system=="Windows"
+comtypes==1.4.5; platform_system=="Windows"
+
+# --- Production server ---
+gunicorn==23.0.0

@@ -1,0 +1,193 @@
+/* ==========================================================================
+   Nova 3.0 — Design tokens
+   Palette: near-black base, violet/purple glow accents, glassmorphism.
+   No sidebar / no history UI by design - single-view voice-first experience.
+   ========================================================================== */
+:root {
+  --bg: #07050F;
+  --ink: #F3F1FA;
+  --ink-muted: #A9A3C4;
+  --line: rgba(255, 255, 255, 0.08);
+
+  --accent: #A855F7;
+  --accent-2: #7C3AED;
+  --accent-soft: rgba(168, 85, 247, 0.25);
+  --accent-glow: rgba(168, 85, 247, 0.55);
+  --white-glow: rgba(255, 255, 255, 0.85);
+
+  --glass-bg: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --shadow-lift: 0 16px 60px rgba(168, 85, 247, 0.28);
+
+  --radius-md: 16px;
+  --radius-lg: 26px;
+  --radius-pill: 999px;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --font-display: "Manrope", "Inter", sans-serif;
+  --font-body: "Inter", "Manrope", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  position: relative;
+}
+button { font-family: inherit; cursor: pointer; }
+input { font-family: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+/* ============================== Ambient background ============================== */
+.bg-layer { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.bg-glow { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.35; }
+.bg-glow.one { width: 520px; height: 520px; top: -160px; left: -120px; background: var(--accent-2); animation: drift-a 22s ease-in-out infinite; }
+.bg-glow.two { width: 460px; height: 460px; bottom: -140px; right: -100px; background: var(--accent); animation: drift-b 26s ease-in-out infinite; }
+.bg-glow.three { width: 340px; height: 340px; top: 40%; left: 55%; background: #4C1D95; opacity: 0.25; animation: drift-a 30s ease-in-out infinite reverse; }
+@keyframes drift-a { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(60px, 40px); } }
+@keyframes drift-b { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-50px, -30px); } }
+
+.bg-ray {
+  position: absolute; width: 2px; height: 140%; top: -20%;
+  background: linear-gradient(to bottom, transparent, rgba(168, 85, 247, 0.18), transparent);
+  transform: rotate(18deg);
+}
+.bg-ray.r1 { left: 18%; animation: ray-fade 6s ease-in-out infinite; }
+.bg-ray.r2 { left: 46%; animation: ray-fade 8s ease-in-out infinite 1.5s; }
+.bg-ray.r3 { left: 74%; animation: ray-fade 7s ease-in-out infinite 0.8s; }
+@keyframes ray-fade { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.4; } }
+
+.particle {
+  position: absolute; width: 3px; height: 3px; border-radius: 50%;
+  background: var(--white-glow); opacity: 0.5; animation: particle-float linear infinite;
+}
+@keyframes particle-float {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.4; }
+  100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+}
+
+/* ============================== Splash ============================== */
+.splash {
+  position: fixed; inset: 0; z-index: 999;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 18px; background: var(--bg);
+  animation: splash-fade 1.8s var(--ease) forwards;
+}
+.splash-mark { animation: splash-pulse 1.6s ease-in-out infinite; filter: drop-shadow(0 0 20px var(--accent-glow)); }
+.splash-word { font-family: var(--font-display); font-weight: 800; letter-spacing: 0.08em; font-size: 22px; color: var(--ink); }
+.splash-version { color: var(--accent); font-weight: 700; margin-left: 6px; }
+@keyframes splash-pulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px var(--accent-glow)); }
+  50% { transform: scale(1.08); filter: drop-shadow(0 0 26px var(--accent-glow)); }
+}
+@keyframes splash-fade {
+  0%, 70% { opacity: 1; visibility: visible; }
+  100% { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+
+/* ============================== Shell / stage ============================== */
+.app-shell { height: 100vh; width: 100vw; position: relative; z-index: 1; }
+.stage { display: flex; flex-direction: column; height: 100vh; }
+.stage-topbar { display: flex; align-items: center; justify-content: space-between; padding: 18px 28px; gap: 10px; }
+.brand { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--ink); }
+.brand em { color: var(--accent); font-style: normal; font-weight: 800; }
+.status-pill {
+  display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px;
+  border-radius: var(--radius-pill); background: var(--glass-bg); backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border); box-shadow: var(--shadow-soft);
+  font-size: 12.5px; font-weight: 600; color: var(--ink-muted);
+}
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-muted); transition: background 0.25s var(--ease), box-shadow 0.25s var(--ease); }
+#statusPill[data-state="listening"] .status-dot,
+#statusPill[data-state="speaking"] .status-dot { background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+.topbar-actions { display: flex; gap: 4px; }
+.icon-btn {
+  border: none; background: transparent; width: 36px; height: 36px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center; font-size: 15px;
+  color: var(--ink-muted); transition: background 0.15s var(--ease), color 0.15s var(--ease), transform 0.15s var(--ease);
+}
+.icon-btn:hover { background: var(--accent-soft); color: var(--ink); }
+.icon-btn:active { transform: scale(0.92); }
+
+/* ============================== Orb ============================== */
+.orb-section { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 10px 20px 24px; }
+.orb-wrapper { background: none; border: none; padding: 0; border-radius: 50%; }
+.orb { width: min(42vh, 300px); height: min(42vh, 300px); transition: filter 0.3s var(--ease); }
+
+#strandsPurple { animation: strands-breathe 4s ease-in-out infinite; transform-origin: center; }
+#ringWhiteCircle { animation: ring-breathe 3.6s ease-in-out infinite; transform-origin: center; }
+@keyframes strands-breathe { 0%, 100% { opacity: 0.75; } 50% { opacity: 1; } }
+@keyframes ring-breathe { 0%, 100% { transform: scale(1); opacity: 0.9; } 50% { transform: scale(1.04); opacity: 1; } }
+
+.orb[data-state="listening"] #strandsPurple,
+.orb[data-state="listening"] #ringWhiteCircle { animation: ring-rotate 2.2s linear infinite; }
+.orb[data-state="listening"] #ringWhiteCircle { filter: url(#ringGlow) brightness(1.3); }
+.orb[data-state="listening"] #waveform { opacity: 1; }
+.orb[data-state="listening"] .wave-bar { animation: wave-bounce 0.9s ease-in-out infinite; }
+.wave-bar:nth-child(1) { animation-delay: 0s; }
+.wave-bar:nth-child(2) { animation-delay: 0.1s; }
+.wave-bar:nth-child(3) { animation-delay: 0.2s; }
+.wave-bar:nth-child(4) { animation-delay: 0.3s; }
+.wave-bar:nth-child(5) { animation-delay: 0.4s; }
+@keyframes wave-bounce { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1.2); } }
+@keyframes ring-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.orb[data-state="thinking"] #strandsPurple { animation: strands-think 1s ease-in-out infinite; }
+.orb[data-state="thinking"] #ringWhiteCircle { animation: ring-pulse-fast 0.8s ease-in-out infinite; }
+@keyframes strands-think { 0%, 100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08) rotate(8deg); } }
+@keyframes ring-pulse-fast { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); filter: brightness(1.4); } }
+
+.orb[data-state="speaking"] #ringWhiteCircle { animation: ring-speak 0.4s ease-in-out infinite; }
+.orb[data-state="speaking"] #strandsPurple { animation: strands-speak 0.5s ease-in-out infinite; }
+@keyframes ring-speak { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); filter: brightness(1.35); } }
+@keyframes strands-speak { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+
+.orb-caption { font-size: 14px; color: var(--ink-muted); margin: 0; }
+.orb-caption strong { color: var(--accent); }
+.orb-transcript { min-height: 22px; font-size: 15px; font-weight: 600; color: var(--ink); margin: 0; text-align: center; max-width: 560px; }
+
+/* ============================== Chat panel (ephemeral, not saved) ============================== */
+.chat-panel { flex: 1; display: flex; flex-direction: column; min-height: 0; max-width: 720px; width: 100%; margin: 0 auto; padding: 0 20px 20px; }
+.chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 6px 4px 12px; }
+.msg { max-width: 78%; padding: 12px 16px; border-radius: var(--radius-md); font-size: 14.5px; line-height: 1.5; animation: msg-in 0.35s var(--ease); }
+@keyframes msg-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.msg.user { align-self: flex-end; background: linear-gradient(135deg, var(--accent-2), var(--accent)); color: #fff; border-bottom-right-radius: 6px; }
+.msg.assistant { align-self: flex-start; background: var(--glass-bg); backdrop-filter: blur(10px); border: 1px solid var(--glass-border); border-bottom-left-radius: 6px; color: var(--ink); }
+.msg pre { background: #05040B; color: #E2E8F0; padding: 12px; border-radius: 10px; overflow-x: auto; font-size: 13px; border: 1px solid var(--line); }
+.msg code { font-family: "SFMono-Regular", Consolas, monospace; }
+
+.chat-input-bar {
+  display: flex; align-items: center; gap: 8px; padding: 8px;
+  background: var(--glass-bg); backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border); border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-soft);
+}
+.chat-input-bar input { flex: 1; border: none; outline: none; background: transparent; padding: 10px 14px; font-size: 14.5px; color: var(--ink); }
+.chat-input-bar input::placeholder { color: var(--ink-muted); }
+.send-btn { background: linear-gradient(135deg, var(--accent-2), var(--accent)); color: #fff; }
+.send-btn:hover { filter: brightness(1.15); color: #fff; }
+#micBtn.active { background: var(--accent); color: #fff; box-shadow: 0 0 0 6px var(--accent-soft); }
+
+/* ============================== YouTube modal (auto-plays) ============================== */
+.modal { position: fixed; inset: 0; background: rgba(5, 4, 11, 0.65); backdrop-filter: blur(8px); z-index: 80; display: flex; align-items: center; justify-content: center; animation: modal-in 0.25s var(--ease); }
+.modal[hidden] { display: none !important; }
+@keyframes modal-in { from { opacity: 0; } to { opacity: 1; } }
+.modal-glass { position: relative; width: min(90vw, 900px); aspect-ratio: 16/9; background: #000; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lift); border: 1px solid var(--glass-border); }
+.modal-glass iframe { width: 100%; height: 100%; border: 0; }
+.modal-close { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.12); color: #fff; z-index: 2; }
+
+/* Scrollbars */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-soft); }

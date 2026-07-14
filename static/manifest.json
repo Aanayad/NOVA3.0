@@ -1,0 +1,13 @@
+{
+  "name": "Nova 3.0 — Your Alexa-style Voice Assistant",
+  "short_name": "Nova 3.0",
+  "description": "A premium, futuristic voice-first AI assistant.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#07050F",
+  "theme_color": "#07050F",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "/static/icons/app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Nova 3.0 — Your AI Voice Assistant</title>
+<meta name="description" content="Nova 3.0, a premium voice-first AI assistant." />
+<meta name="theme-color" content="#07050F" />
+<link rel="manifest" href="/manifest.json" />
+<link rel="icon" type="image/svg+xml" href="/static/icons/favicon.svg" />
+<link rel="apple-touch-icon" href="/static/icons/app-icon.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+  <!-- Ambient dark/purple background -->
+  <div class="bg-layer" aria-hidden="true">
+    <div class="bg-glow one"></div>
+    <div class="bg-glow two"></div>
+    <div class="bg-glow three"></div>
+    <div class="bg-ray r1"></div>
+    <div class="bg-ray r2"></div>
+    <div class="bg-ray r3"></div>
+    <div class="bg-particles" id="bgParticles"></div>
+  </div>
+
+  <!-- Splash screen -->
+  <div id="splash" class="splash">
+    <svg class="splash-mark" viewBox="0 0 100 100" width="72" height="72" aria-hidden="true">
+      <circle cx="50" cy="50" r="40" fill="none" stroke="url(#splashGrad)" stroke-width="5"/>
+      <defs>
+        <linearGradient id="splashGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#FFFFFF"/>
+          <stop offset="100%" stop-color="#A855F7"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    <p class="splash-word">NOVA<span class="splash-version">3.0</span></p>
+  </div>
+
+  <div class="app-shell" id="appShell" hidden>
+    <main class="stage" style="grid-column: 1 / -1;">
+
+      <header class="stage-topbar">
+        <div class="brand">
+          <svg viewBox="0 0 100 100" width="24" height="24" aria-hidden="true">
+            <circle cx="50" cy="50" r="40" fill="none" stroke="#A855F7" stroke-width="7"/>
+          </svg>
+          <span>Nova <em>3.0</em></span>
+        </div>
+        <div class="status-pill" id="statusPill">
+          <span class="status-dot"></span>
+          <span id="statusText">Idle</span>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+        </div>
+      </header>
+
+      <!-- The Orb: interlocking purple/white glowing ring -->
+      <section class="orb-section">
+        <button class="orb-wrapper" id="orbButton" aria-label="Talk to Nova">
+          <svg id="orbSvg" viewBox="0 0 400 400" class="orb" data-state="idle">
+            <defs>
+              <filter id="ringGlow" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="6" result="blur"/>
+                <feMerge>
+                  <feMergeNode in="blur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+              <linearGradient id="ringWhite" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#FFFFFF"/>
+                <stop offset="100%" stop-color="#E9D5FF"/>
+              </linearGradient>
+            </defs>
+
+            <!-- woven purple strands -->
+            <g id="strandsPurple" filter="url(#ringGlow)">
+              <ellipse cx="200" cy="200" rx="120" ry="150" fill="none" stroke="#7C3AED" stroke-width="5" opacity="0.85"/>
+              <ellipse cx="200" cy="200" rx="150" ry="120" fill="none" stroke="#A855F7" stroke-width="5" opacity="0.75"/>
+              <ellipse cx="200" cy="200" rx="135" ry="135" fill="none" stroke="#9333EA" stroke-width="4" opacity="0.6" transform="rotate(45 200 200)"/>
+            </g>
+
+            <!-- bright white ring on top -->
+            <circle id="ringWhiteCircle" cx="200" cy="200" r="132" fill="none" stroke="url(#ringWhite)" stroke-width="6" filter="url(#ringGlow)"/>
+
+            <!-- waveform bars, shown while listening -->
+            <g id="waveform" opacity="0">
+              <rect class="wave-bar" x="172" y="185" width="6" height="30" rx="3" fill="#FFFFFF"/>
+              <rect class="wave-bar" x="186" y="170" width="6" height="60" rx="3" fill="#FFFFFF"/>
+              <rect class="wave-bar" x="200" y="160" width="6" height="80" rx="3" fill="#FFFFFF"/>
+              <rect class="wave-bar" x="214" y="170" width="6" height="60" rx="3" fill="#FFFFFF"/>
+              <rect class="wave-bar" x="228" y="185" width="6" height="30" rx="3" fill="#FFFFFF"/>
+            </g>
+          </svg>
+        </button>
+
+        <p class="orb-caption" id="orbCaption">Tap the orb, or just say <strong>“Nova”</strong></p>
+        <p class="orb-transcript" id="orbTranscript" aria-live="polite"></p>
+      </section>
+
+      <!-- Ephemeral chat log - NOT saved anywhere, cleared on refresh -->
+      <section class="chat-panel" id="chatPanel">
+        <div class="chat-messages" id="chatMessages"></div>
+
+        <form class="chat-input-bar" id="chatForm">
+          <input
+            type="text"
+            id="chatInput"
+            placeholder="Message Nova, or press the mic…"
+            autocomplete="off"
+          />
+          <button type="button" class="icon-btn" id="micBtn" aria-label="Start listening">🎙</button>
+          <button type="submit" class="icon-btn send-btn" aria-label="Send">➤</button>
+        </form>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- YouTube inline player, auto-plays the resolved top result -->
+  <div class="modal" id="ytModal" hidden>
+    <div class="modal-glass">
+      <button class="icon-btn modal-close" id="ytModalClose" aria-label="Close">✕</button>
+      <iframe id="ytFrame" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <script src="/static/js/orb.js"></script>
+  <script src="/static/js/voice.js"></script>
+  <script src="/static/js/commands.js"></script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
